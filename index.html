@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2b2a35">
+
+  <link rel="stylesheet" href="dist/css/style.min.css">
+  <title>Restaurant Reviews</title>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <h1><a href="/" title="go to homepage">Restaurant Reviews</a></h1>
+    </nav>
+  </header>
+
+  <a class="skip-link" href="#filter-options">Skip map</a>
+
+  <main id="maincontent">
+
+    <section id="map-container">
+      <div id="map" role="application" aria-label="google map with restaurants address" tabindex="0"></div>
+    </section>
+    <section>
+      <div id="filter-options" class="filter-options">
+        <h2 aria-label="filter restaurants" tabindex="0">Filter Results</h2>
+        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+          <option value="all">All Neighborhoods</option>
+        </select>
+        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+          <option value="all">All Cuisines</option>
+        </select>
+      </div>
+    </section>
+    <section id="restaurants-list"></section>
+  </main>
+
+  <script type="application/javascript" charset="utf-8" src="dist/js/main.min.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDunksyNNWtdeDofpYNRksd6-1Bifl3MeQ&libraries=places&callback=initMap"></script>
+
+  <footer id="footer">
+    Copyright (c) 2017 <a href="/" title="go to homepage"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+  </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2b2a35">
+
+  <link rel="stylesheet" href="dist/css/style.min.css">
+  <title>Restaurant Info</title>
+</head>
+
+<body class="inside">
+  <!-- Beginning header -->
+  <header>
+    <!-- Beginning nav -->
+    <nav>
+      <h1><a href="/" title="go to homepage">Restaurant Reviews</a></h1>
+    </nav>
+    <!-- Beginning breadcrumb -->
+    <nav aria-label="breadcrumb">      
+      <ul id="breadcrumb" >
+        <li><a href="/">Home</a></li>
+      </ul>
+    </nav>
+    <!-- End breadcrumb -->
+    <!-- End nav -->
+  </header>
+  <!-- End header -->
+
+  <a class="skip-link" href="#restaurant-container">Skip map</a>
+
+  <!-- Beginning main -->
+  <main id="maincontent">
+    <!-- Beginning map -->
+    <section id="map-container">
+      <div id="map" role="application" aria-label="google map with the restaurant address" tabindex="0"></div>
+    </section>
+    <!-- End map -->
+    <!-- Beginning restaurant -->
+    <section id="restaurant-container">
+      <h2 id="restaurant-name"></h2>
+      <img id="restaurant-img">
+      <p id="restaurant-cuisine"></p>
+      <p id="restaurant-address"></p>
+      <table id="restaurant-hours"></table>
+    </section>
+    <!-- end restaurant -->
+    <!-- Beginning reviews -->
+    <section id="reviews-container">
+      <ul id="reviews-list"></ul>
+    </section>
+    <!-- End reviews -->
+  </main>
+  <!-- End main -->
+
+  <!-- Beginning footer -->
+  <footer id="footer">
+    Copyright (c) 2017 <a href="/" title="go to homepage"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+  </footer>
+  <!-- End footer -->
+
+  <!-- Beginning scripts -->
+
+  <!-- Main javascript file -->
+  <script type="text/javascript" src="dist/js/restaurant_info.min.js"></script>
+  <!-- Google Maps -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDunksyNNWtdeDofpYNRksd6-1Bifl3MeQ&libraries=places&callback=initMap"></script>
+  <!-- End scripts -->
+
+</body>
+
+</html>
