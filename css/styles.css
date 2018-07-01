@@ -8,6 +8,10 @@ html {
   box-sizing: inherit;
 }
 
+body {
+  position: relative;
+}
+
 html,
 body,
 p {
@@ -499,4 +503,16 @@ nav[aria-label="breadcrumb"] {
   #restaurants-list article {
     width: 30.3333%;
   }  
+}
+
+#offline-alert {
+  position: fixed;
+  z-index: 10000;
+  right: 40px;
+  top: 40px;
+  background: #000;
+  color: red;
+  width: 280px;
+  padding: 10px;
+  display: none;
 }

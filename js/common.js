@@ -58,3 +58,16 @@ window.setTimeout(function() {
   document.getElementById('map').style.display = 'block';
   
 }, 2000);
+
+window.onload = function() { 
+  console.log(document.getElementById('offline-alert'));
+  window.addEventListener('offline', function(e) { 
+    console.log('offline'); 
+    document.getElementById('offline-alert').style.display = 'block';
+  });
+
+  window.addEventListener('online', function(e) { 
+    console.log('online');
+    document.getElementById('offline-alert').style.display = 'none'; 
+  });
+}
