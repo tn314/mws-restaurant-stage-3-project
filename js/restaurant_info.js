@@ -65,11 +65,11 @@ window.fillRestaurantHTML = (restaurant = self.restaurant) => {
   const mediumImage = `${imageName}-600px.jpg`;
   const largeImage = `${imageName}-800px.jpg`;
 
-  image.src = smallImage;
-  image.setAttribute('srcset', `${smallImage} 400w, ${mediumImage} 600w, ${largeImage} 800w, ${largeImage} 2x`); 
-  //image.src = '/dist/images/rr-default-400px.jpg';
-  //image.setAttribute('data-src', smallImage);
-  //image.setAttribute('data-srcset', `${smallImage} 400w, ${mediumImage} 600w, ${largeImage} 800w, ${largeImage} 2x`); 
+  //image.src = smallImage;
+  //image.setAttribute('srcset', `${smallImage} 400w, ${mediumImage} 600w, ${largeImage} 800w, ${largeImage} 2x`); 
+  image.src = '/dist/images/rr-default-400px.jpg';
+  image.setAttribute('data-src', smallImage);
+  image.setAttribute('data-srcset', `${smallImage} 400w, ${mediumImage} 600w, ${largeImage} 800w, ${largeImage} 2x`); 
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
