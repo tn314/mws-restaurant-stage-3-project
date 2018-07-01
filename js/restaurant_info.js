@@ -65,6 +65,13 @@ window.fillRestaurantHTML = (restaurant = self.restaurant) => {
   const mediumImage = `${imageName}-600px.jpg`;
   const largeImage = `${imageName}-800px.jpg`;
 
+  const star = document.getElementById('favorite-star-svg');
+  const favoriteStar = document.getElementById('favorite-star');
+
+  if (restaurant.is_favorite == "true" || restaurant.is_favorite === true) {
+    star.classList.add("is-favorite");
+  }
+
   //image.src = smallImage;
   //image.setAttribute('srcset', `${smallImage} 400w, ${mediumImage} 600w, ${largeImage} 800w, ${largeImage} 2x`); 
   image.src = '/dist/images/rr-default-400px.jpg';
@@ -210,3 +217,22 @@ reviewsForm.addEventListener('submit', function (e) {
     reviewsForm.reset();
   });
 });
+
+
+
+document.getElementById('favorite-star').addEventListener('click', function (e) {
+
+  const star = document.getElementById('favorite-star-svg');
+  star.classList.toggle('is-favorite');
+
+  let restaurantId = getParameterByName('id', window.location);
+
+  if (star.classList.contains('is-favorite')) {
+    console.log('is-starred');
+    DBHelper.toggleFavorite(restaurantId, true);
+  } else {
+    console.log('not starred');
+    DBHelper.toggleFavorite(restaurantId, false);
+  }
+});
+

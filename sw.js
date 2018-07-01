@@ -79,11 +79,14 @@ function servePhoto(request) {
 }
 
 self.addEventListener('sync', function(event) {
-  console.log('Attempting sync', event.tag);
 
   if (event.tag == 'submitPendingReviews') {
     event.waitUntil(checkPendingReviews());
   }
+
+  if (event.tag == 'submitPendingFavorites') {
+    event.waitUntil(checkPendingFavorites());
+  }  
 
 });
 
@@ -107,3 +110,22 @@ function checkPendingReviews() {
   });
 }
 
+
+function checkPendingFavorites() {
+  let dbPromise = DBHelper.openIdbDatabase();
+
+  dbPromise.then(function(db) {
+    if(!db) return;
+    var tx = db.transaction('restaurants', 'readwrite');
+    var store = tx.objectStore('restaurants');
+
+    return store.getAll();
+  }).then(function(restaurants) {
+    restaurants.forEach(function(restaurant) {
+
+      if (restaurant.is_favorite_pending == "true" || restaurant.is_favorite_pending == true) {
+        DBHelper.submitRestaurantPendingFavorites(restaurant);
+      }
+    });
+  });
+}

@@ -8,8 +8,10 @@
 
       navigator.serviceWorker.ready.then(function(swRegistration) {
         console.log('sw registration sync ready');
-        return swRegistration.sync.register('submitPendingReviews');
-      });      
+        swRegistration.sync.register('submitPendingFavorites');
+        swRegistration.sync.register('submitPendingReviews');
+      });
+           
     });
   }
 

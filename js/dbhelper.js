@@ -238,7 +238,6 @@ class DBHelper {
    * Store a new Review
    */
   static storeReview(newReview, callback) {
-    console.log(newReview.restaurantId);
     let dbPromise = DBHelper.openIdbDatabase();
 
     fetch(`${DBHelper.DATABASE_URL}/reviews`, {
@@ -354,6 +353,82 @@ class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
+  }
+
+  /**
+   * Toggle restaurant favorite
+   */
+  static toggleFavorite(restaurantId, isFavorite) {
+    fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurantId}/?is_favorite=${isFavorite}`, {
+      method: 'put',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })  
+    .then(response => {
+      console.log(response);
+    })
+    .catch(e => {
+      let dbPromise = DBHelper.openIdbDatabase();
+
+        dbPromise.then(function(db) {
+          if(!db) return;
+
+          var tx = db.transaction('restaurants', 'readwrite');
+          var store = tx.objectStore('restaurants');
+
+          return store.getAll();
+        }).then(function (restaurants) {
+          let restaurant = restaurants.filter(restaurant => restaurant.id == restaurantId)[0];
+
+          restaurant.is_favorite = isFavorite;
+          restaurant.is_favorite_pending = true;
+
+          dbPromise.then(function(db) {
+            if(!db) return;
+
+            var tx = db.transaction('restaurants', 'readwrite');
+            var store = tx.objectStore('restaurants');
+
+            store.put(restaurant);
+
+            return tx.complete;
+          }).then(function() {
+             console.log('updated restaurant in db');
+          });
+
+        });      
+    });
+  }
+
+  /**
+   * Submit pending favorites
+   */
+  static submitRestaurantPendingFavorites(restaurant) {
+    fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/?is_favorite=${restaurant.is_favorite}`, {
+      method: 'put',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })  
+    .then(response => {
+        let dbPromise = DBHelper.openIdbDatabase();
+
+        dbPromise.then(function(db) {
+        if(!db) return;
+        var tx = db.transaction('restaurants', 'readwrite');
+        var store = tx.objectStore('restaurants');
+
+        restaurant.is_favorite_pending = false;
+        store.put(restaurant);
+
+        return tx.complete;
+    })
+    }).catch(e => {
+
+    });
   }
 
   static generateRandomId() {
