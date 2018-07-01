@@ -1,6 +1,13 @@
 @charset "utf-8";
 /* CSS Document */
 
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 html,
 body,
 p {
@@ -140,7 +147,6 @@ nav[aria-label="breadcrumb"] {
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
   background-color: #2B2A35;
-  box-sizing: border-box;
   padding: 20px;  
   width: 100%;
 }
@@ -176,7 +182,6 @@ nav[aria-label="breadcrumb"] {
 }
 #restaurants-list article {
   background-color: #fff;
-  box-sizing: border-box;
   font-family: Arial,sans-serif;
   margin: 1.5%;
   min-height: 380px;
@@ -304,7 +309,6 @@ nav[aria-label="breadcrumb"] {
 #reviews-list header {
   align-items: center;
   background-color: #2B2A35;
-  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   font-size: 1.3rem;
@@ -341,6 +345,65 @@ nav[aria-label="breadcrumb"] {
 #reviews-list li > p:nth-child(3) {
   color: #2B2A35;
   line-height: 1.5;
+}
+
+#reviews-form {
+  padding: 40px;
+}
+
+.reviews-form-title {
+  color: #2b2a35;
+  font-size: 1.8rem;
+  font-weight: 300;
+  letter-spacing: -1px;
+}
+
+#reviews-form label,
+#reviews-form input,
+#reviews-form textarea {
+  width: 100%;
+  display: block;
+}
+
+#reviews-form label {
+  margin-bottom: .6em;
+  font-weight: bold;
+  font-size: .9rem;
+  color: #2B2A35;
+}
+
+#reviews-form input,
+#reviews-form textarea {
+  margin-bottom: 20px;
+  border: 1px solid #2B2A35;
+  transition: border .3s linear;
+  padding: .6rem;
+}
+
+#reviews-form input:focus,
+#reviews-form textarea:focus {
+  border: 1px solid #FDB000;
+}
+
+#reviews-form button {
+  background-color: #2b2a35;
+  border: 2px solid #2b2a35;
+  color: #FFF;
+  display: inline-block;
+  font-size: .9rem;
+  font-weight: 700;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  padding: 12px 30px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color .3s linear;  
+}
+
+#reviews-form button:hover {
+  cursor: pointer;
+  color: orange; 
 }
 
 #restaurant-hours,
@@ -396,9 +459,18 @@ nav[aria-label="breadcrumb"] {
     width: 50%;
   }
 
+  #reviews {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  #reviews-form {
+    width: 50%;
+  }
+
   #restaurant-container {
     order: -1;
-    box-sizing: border-box;
     padding: 40px;
   }
 

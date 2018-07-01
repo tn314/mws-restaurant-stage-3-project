@@ -67,6 +67,9 @@ window.fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   image.src = smallImage;
   image.setAttribute('srcset', `${smallImage} 400w, ${mediumImage} 600w, ${largeImage} 800w, ${largeImage} 2x`); 
+  //image.src = '/dist/images/rr-default-400px.jpg';
+  //image.setAttribute('data-src', smallImage);
+  //image.setAttribute('data-srcset', `${smallImage} 400w, ${mediumImage} 600w, ${largeImage} 800w, ${largeImage} 2x`); 
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -76,7 +79,15 @@ window.fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  //fetch(`http://localhost:1337/reviews?restaurant_id=${restaurant.id}`)
+  //    .then(response => response.json())
+  //    .then(reviews => { 
+  //      restaurant.reviews = reviews;
+  //      fillReviewsHTML();
+  //    });
+  if (restaurant) {
+    DBHelper.fetchReviewsByRestaurantId(restaurant, fillReviewsHTML);
+  }
 }
 
 /**
@@ -132,7 +143,7 @@ window.createReviewHTML = (review) => {
   header.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = review.updatedAt;
   header.appendChild(date);
 
   li.appendChild(header);
@@ -174,3 +185,28 @@ window.getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+
+
+const reviewsForm = document.getElementById('reviews-form');
+const ul = document.getElementById('reviews-list');
+
+reviewsForm.addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  let restaurantId = getParameterByName('id', window.location);
+  let name = reviewsForm.elements["name"].value;
+  let rating = reviewsForm.elements["rating"].value;
+  let comments = reviewsForm.elements["comments"].value;
+  let newReview = {
+      restaurantId,
+      name,
+      rating,
+      comments
+  }
+
+  DBHelper.storeReview(newReview, function (review) {
+    ul.appendChild(createReviewHTML(review));
+    reviewsForm.reset();
+  });
+});

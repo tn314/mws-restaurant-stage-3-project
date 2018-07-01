@@ -1,4 +1,6 @@
-var staticCacheName = 'restaurant-reviews-static-v2';
+self.importScripts('/node_modules/idb/lib/idb.js', '/js/dbhelper.js');
+
+var staticCacheName = 'restaurant-reviews-static-v1';
 var contentImgsCache = 'restaurant-reviews-content-imgs';
 var allCaches = [
   staticCacheName,
@@ -12,7 +14,7 @@ self.addEventListener('install', function(event) {
     'restaurant.html',
     'dist/css/style.min.css',
     'dist/js/main.min.js',
-    'dist/js/restaurant_info.min.js',                   
+    'dist/js/restaurant_info.min.js',              
   ];
 
 
@@ -75,3 +77,33 @@ function servePhoto(request) {
     });
   });
 }
+
+self.addEventListener('sync', function(event) {
+  console.log('Attempting sync', event.tag);
+
+  if (event.tag == 'submitPendingReviews') {
+    event.waitUntil(checkPendingReviews());
+  }
+
+});
+
+function checkPendingReviews() {
+  let dbPromise = DBHelper.openIdbDatabase();
+
+  dbPromise.then(function(db) {
+    if(!db) return;
+    var tx = db.transaction('pending-reviews', 'readwrite');
+    var store = tx.objectStore('pending-reviews');
+
+    return store.getAll();
+  }).then(function(pendingReviews) {
+    pendingReviews.forEach(function(review) {
+      DBHelper.deletePendingReviewFromIdb(review);
+
+      DBHelper.storeReview(review, function (review) {
+        console.log('submiting pending reviews');
+      });   
+    });
+  });
+}
+

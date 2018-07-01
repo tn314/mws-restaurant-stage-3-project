@@ -48,8 +48,25 @@
     </section>
     <!-- end restaurant -->
     <!-- Beginning reviews -->
-    <section id="reviews-container">
-      <ul id="reviews-list"></ul>
+    <section id="reviews">
+      <div id="reviews-container">  
+          <ul id="reviews-list"></ul>
+      </div>
+
+      <form id="reviews-form">
+        <h3 class="reviews-form-title">Leave a review</h3>
+
+        <label for="name">Your Name</label>
+        <input id="name" type="text" name="name" placeholder="Your Name" required>
+
+        <label for="rating">Rating</label>
+        <input id="rating" type="number" name="rating" placeholder="*****"min="0" max="5" required>
+
+        <label for="comments">Comments</label>
+        <textarea id="comments" name="comments" placeholder="This is a great restaurant!" required></textarea>
+
+        <button type="submit">SUBMIT</button>        
+      </form>
     </section>
     <!-- End reviews -->
   </main>

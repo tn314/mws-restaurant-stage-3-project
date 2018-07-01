@@ -10,12 +10,21 @@ class DBHelper {
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port
     //return `http://localhost:${port}/data/restaurants.json`;
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}`;
   }
 
   static openIdbDatabase() {
-    return idb.open('mws-restaurants', 1, function(upgradeDb) {
-      return upgradeDb.createObjectStore('restaurants', {keyPath: 'id'});
+    return idb.open('mws-restaurants', 2, function(upgradeDB) {
+      //return upgradeDb.createObjectStore('restaurants', {keyPath: 'id'});
+      // Note: we don't use 'break' in this switch statement,
+      // the fall-through behaviour is what we want.
+      switch (upgradeDB.oldVersion) {
+        case 0:
+          upgradeDB.createObjectStore('restaurants', {keyPath: 'id'});
+        case 1:
+          upgradeDB.createObjectStore('pending-reviews', { keyPath: 'random_id' });
+          upgradeDB.createObjectStore('reviews', {keyPath: 'id'});
+      }
     });   
   }
 
@@ -25,7 +34,7 @@ class DBHelper {
   static fetchRestaurants(callback) {
     let dbPromise = DBHelper.openIdbDatabase();
 
-    fetch(DBHelper.DATABASE_URL)
+    fetch(`${DBHelper.DATABASE_URL}/restaurants`)
       .then(response => response.json())
       .then(restaurants => {
         dbPromise.then(function(db) {
@@ -166,6 +175,156 @@ class DBHelper {
   }
 
   /**
+   * Fetch reviews for a restaurant
+   */
+  static fetchReviewsByRestaurantId(restaurant, callback) {
+
+    let dbPromise = DBHelper.openIdbDatabase();
+
+    fetch(`${DBHelper.DATABASE_URL}/reviews?restaurant_id=${restaurant.id}`)
+      .then(response => response.json())
+      .then(reviews => {
+        dbPromise.then(function(db) {
+          if(!db) return;
+
+          var tx = db.transaction('reviews', 'readwrite');
+          var store = tx.objectStore('reviews');
+
+          reviews.forEach(function(review) {
+            store.put(review);
+          });
+
+          restaurant.reviews = reviews;
+
+          return tx.complete;
+        }).then(function () {
+          callback();
+        });
+
+      }).catch(e => {
+        dbPromise.then(function(db) {
+          if(!db) return;
+          var tx = db.transaction('reviews', 'readwrite');
+          var store = tx.objectStore('reviews');
+
+          return store.getAll();
+        }).then(function(reviews) {
+
+          let restaurantReviews = reviews.filter((review) => review.restaurant_id == restaurant.id);
+          restaurant.reviews = restaurantReviews;
+          
+          dbPromise.then(function(db) {
+            if(!db) return;
+            var tx = db.transaction('pending-reviews', 'readwrite');
+            var store = tx.objectStore('pending-reviews');
+
+            return store.getAll();
+          }).then(function(pendingReviews) {
+
+            let pendingRestaurantReviews = pendingReviews.filter((review) => {
+              return review.restaurantId == restaurant.id;
+            });
+
+            restaurant.reviews.push(...pendingRestaurantReviews);
+
+          }).then(function() {
+            callback();
+          });          
+        });
+      });
+  }
+
+  /**
+   * Store a new Review
+   */
+  static storeReview(newReview, callback) {
+    console.log(newReview.restaurantId);
+    let dbPromise = DBHelper.openIdbDatabase();
+
+    fetch(`${DBHelper.DATABASE_URL}/reviews`, {
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },        
+      body: JSON.stringify({
+          "restaurant_id": newReview.restaurantId,
+          "name": newReview.name,
+          "rating": newReview.rating,
+          "comments": newReview.comments
+      })
+    })  
+    .then(response => response.json())
+    .then(review => {
+      console.log(review);
+
+      dbPromise.then(function(db) {
+        if(!db) return;
+
+        var tx = db.transaction('reviews', 'readwrite');
+        var store = tx.objectStore('reviews');
+
+        store.put(review);
+
+        if (review.hasOwnProperty('random_id')) {
+          DBHelper.deletePendingReviewFromIdb(review);
+        }
+
+        tx.complete;
+
+        return review;
+      }).then(function (review) {
+          callback(review);
+      });
+
+
+    }).catch(() => {
+      dbPromise.then(function(db) {
+        if(!db) return;
+
+        var tx = db.transaction('pending-reviews', 'readwrite');
+        var store = tx.objectStore('pending-reviews');
+
+        newReview.random_id = DBHelper.generateRandomId();
+
+        store.put(newReview);
+      
+        tx.complete;
+
+        return newReview;
+
+      }).then(function (review) {
+        callback(review);
+      });
+
+
+    }); 
+   
+  }
+
+  /**
+   * Delete Pending Review From Idb
+   */
+  static deletePendingReviewFromIdb(review) {
+
+    let dbPromise = DBHelper.openIdbDatabase();
+
+    dbPromise.then(function(db) {
+      if(!db) return;
+      var tx = db.transaction('pending-reviews', 'readwrite');
+      var store = tx.objectStore('pending-reviews');
+
+      store.delete(review.random_id);
+      
+      return tx.complete;
+    }).then(function() {
+      console.log('deleted pending review');
+    });
+
+  }
+
+
+  /**
    * Restaurant page URL.
    */
   static urlForRestaurant(restaurant) {
@@ -195,6 +354,10 @@ class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
+  }
+
+  static generateRandomId() {
+    return '_' + Math.random().toString(36).substr(2, 9);
   }
 
 }
