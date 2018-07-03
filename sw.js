@@ -1,4 +1,3 @@
-self.importScripts('/node_modules/idb/lib/idb.js', '/js/dbhelper.js');
 
 var staticCacheName = 'restaurant-reviews-static-v1';
 var contentImgsCache = 'restaurant-reviews-content-imgs';
