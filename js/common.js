@@ -8,6 +8,7 @@
     });
   }
 
+/*
 window.setTimeout(function() {
   let images = document.querySelectorAll('source, img');
 
@@ -51,7 +52,7 @@ window.setTimeout(function() {
   document.getElementById('map').style.display = 'block';
   
 }, 2000);
-
+*/
 
 function checkPendingReviews() {
   let dbPromise = DBHelper.openIdbDatabase();

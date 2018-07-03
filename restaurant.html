@@ -35,6 +35,15 @@
   <main id="maincontent">
     <!-- Beginning map -->
     <section id="map-container">
+      <span role="button" id="map-trigger">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+        <title>Load Map</title>
+        <path d="M0 24l40-16v96l-40 16z"></path>
+        <path d="M48 4l40 24v92l-40-20z"></path>
+        <path d="M96 28l32-24v96l-32 24z"></path>
+        </svg>
+        <span class="load-map-text">Load Map</span>
+      </span>      
       <div id="map" role="application" aria-label="google map with the restaurant address" tabindex="0"></div>
     </section>
     <!-- End map -->
@@ -90,8 +99,6 @@
 
   <!-- Main javascript file -->
   <script type="text/javascript" src="dist/js/restaurant_info.min.js"></script>
-  <!-- Google Maps -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDunksyNNWtdeDofpYNRksd6-1Bifl3MeQ&libraries=places&callback=initMap"></script>
   <!-- End scripts -->
 
   <div id="offline-alert">No network connection</div>

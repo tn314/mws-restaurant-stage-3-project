@@ -11,7 +11,19 @@ var markers = [];
 document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
+  updateRestaurants();
 });
+
+
+document.getElementById('map-trigger').addEventListener('click', function () {
+  var scriptElement=document.createElement('script');
+  scriptElement.type = 'text/javascript';
+  document.getElementById('map').style.display = 'block';
+  scriptElement.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDunksyNNWtdeDofpYNRksd6-1Bifl3MeQ&libraries=places&callback=initMap';
+  document.body.appendChild(scriptElement);
+  document.getElementById('map-trigger').setAttribute('data-map-loaded', true);
+});
+
 
 /**
  * Fetch all neighborhoods and set their HTML.
@@ -133,7 +145,11 @@ window.fillRestaurantsHTML = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     section.append(createRestaurantHTML(restaurant));
   });
-  addMarkersToMap();
+
+  if (document.getElementById('map-trigger').getAttribute('data-map-loaded')) {
+    addMarkersToMap();
+    document.getElementById('map-trigger').style.display = 'none';
+  }
 }
 
 /**
@@ -152,11 +168,11 @@ window.createRestaurantHTML = (restaurant) => {
   const mediumImage = `${imageName}-600px.jpg`;
   const largeImage = `${imageName}-800px.jpg`;
 
-  //image.src = smallImage;
-  //image.setAttribute('srcset', `${largeImage} 2x`);
-  image.src = '/dist/images/rr-default-400px.jpg';
-  image.setAttribute('data-src', smallImage);
-  image.setAttribute('data-srcset', `${largeImage} 2x`);   
+  image.src = smallImage;
+  image.setAttribute('srcset', `${largeImage} 2x`);
+  //image.src = '/dist/images/rr-default-400px.jpg';
+  //image.setAttribute('data-src', smallImage);
+  //image.setAttribute('data-srcset', `${largeImage} 2x`);   
 
   article.append(image);
 

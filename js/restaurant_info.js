@@ -1,6 +1,25 @@
 let restaurant;
 var map;
 
+document.addEventListener('DOMContentLoaded', function () {
+  fetchRestaurantFromURL((error, restaurant) => {
+    if (error) { // Got an error!
+      console.error(error);
+    } else {
+      fillBreadcrumb();     
+    }
+  });
+});
+
+document.getElementById('map-trigger').addEventListener('click', function () {
+  var scriptElement=document.createElement('script');
+  scriptElement.type = 'text/javascript';
+  document.getElementById('map').style.display = 'block';
+  scriptElement.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDunksyNNWtdeDofpYNRksd6-1Bifl3MeQ&libraries=places&callback=initMap';
+  document.body.appendChild(scriptElement);
+  document.getElementById('map-trigger').setAttribute('data-map-loaded', true);
+});
+
 /**
  * Initialize Google map, called from HTML.
  */
@@ -15,7 +34,11 @@ window.initMap = () => {
         scrollwheel: false
       });
       fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+
+      if (document.getElementById('map-trigger').getAttribute('data-map-loaded')) {
+        DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+        document.getElementById('map-trigger').style.display = 'none';      
+      }      
     }
   });
 }
@@ -72,11 +95,11 @@ window.fillRestaurantHTML = (restaurant = self.restaurant) => {
     star.classList.add("is-favorite");
   }
 
-  //image.src = smallImage;
-  //image.setAttribute('srcset', `${smallImage} 400w, ${mediumImage} 600w, ${largeImage} 800w, ${largeImage} 2x`); 
-  image.src = '/dist/images/rr-default-400px.jpg';
-  image.setAttribute('data-src', smallImage);
-  image.setAttribute('data-srcset', `${smallImage} 400w, ${mediumImage} 600w, ${largeImage} 800w, ${largeImage} 2x`); 
+  image.src = smallImage;
+  image.setAttribute('srcset', `${smallImage} 400w, ${mediumImage} 600w, ${largeImage} 800w, ${largeImage} 2x`); 
+  //image.src = '/dist/images/rr-default-400px.jpg';
+  //image.setAttribute('data-src', smallImage);
+  //image.setAttribute('data-srcset', `${smallImage} 400w, ${mediumImage} 600w, ${largeImage} 800w, ${largeImage} 2x`); 
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -85,13 +108,7 @@ window.fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  //fetch(`http://localhost:1337/reviews?restaurant_id=${restaurant.id}`)
-  //    .then(response => response.json())
-  //    .then(reviews => { 
-  //      restaurant.reviews = reviews;
-  //      fillReviewsHTML();
-  //    });
+
   if (restaurant) {
     DBHelper.fetchReviewsByRestaurantId(restaurant, fillReviewsHTML);
   }

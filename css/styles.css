@@ -150,6 +150,11 @@ nav[aria-label="breadcrumb"] {
   display: none;
 }
 
+#map-trigger {
+  fill: #FFF;
+  cursor: pointer;
+}
+
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
   background-color: #2B2A35;
@@ -173,6 +178,13 @@ nav[aria-label="breadcrumb"] {
   margin: 10px;
   padding: 0 10px;
   width: 200px;
+}
+
+.filter-options #map-trigger {
+  display: inline-block;
+  margin-left: 20px;
+  position: relative;
+  top: 10px;
 }
 
 /* ====================== Restaurant Listing ====================== */
@@ -248,11 +260,24 @@ nav[aria-label="breadcrumb"] {
   background: #2B2A35;
   height: 300px;
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
 .inside #map {
   background-color: #ccc;
   height: 100%;
   width: 100%;
+}
+
+.inside #map-trigger {
+  padding-top: 30px;
+}
+
+.inside .load-map-text {
+  color: #FFF;
+  text-align: center;
+  display: block;
+  margin-top: 20px;
 }
 
 #restaurant-name {
@@ -450,6 +475,10 @@ nav[aria-label="breadcrumb"] {
   .filter-options {
     display: flex;
     align-items: center;
+  }
+
+  .filter-options #map-trigger {
+    top: 2px;
   }
 
   .inside {
